@@ -1,9 +1,13 @@
 #include "vm_engine.h"
 #include "renderer.h"
+#include "checkinstance.h"
 #include <stdlib.h>
 #include <string.h>
 
 vm_state* vm_create(ANativeWindow* window) {
+    check_instance_init();
+    check_instance_register(window);
+    
     vm_state* state = malloc(sizeof(vm_state));
     memset(state, 0, sizeof(vm_state));
     
@@ -18,6 +22,8 @@ vm_state* vm_create(ANativeWindow* window) {
 
 void vm_destroy(vm_state* state) {
     if (!state) return;
+    
+    check_instance_unregister(state->window);
     
     if (state->initialized) {
         renderer_cleanup(&state->vk);
@@ -38,6 +44,8 @@ void vm_push(vm_state* state, vm_command_type type, void* data, void (*callback)
 
 int vm_execute_next(vm_state* state) {
     if (state->stack.top < 0) return 0;
+    
+    check_instance_validate();
     
     vm_stack_item item = state->stack.items[state->stack.top];
     state->stack.top--;
