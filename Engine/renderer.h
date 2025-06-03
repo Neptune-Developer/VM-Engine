@@ -19,14 +19,17 @@ typedef struct {
     VkExtent2D swap_chain_extent;
     uint32_t graphics_family;
     uint32_t image_count;
+    VkSemaphore image_available_semaphore;
+    VkSemaphore render_finished_semaphore;
+    VkFence in_flight_fence;
 } vulkan_context;
 
 void renderer_init(vulkan_context* ctx, ANativeWindow* window);
 void renderer_draw(vulkan_context* ctx, float* clear_color);
 void renderer_cleanup(vulkan_context* ctx);
 
-void create_swapchain(vulkan_context* ctx);
-void create_render_pass(vulkan_context* ctx);
-void create_framebuffers(vulkan_context* ctx);
-void create_command_pool(vulkan_context* ctx);
-void create_command_buffer(vulkan_context* ctx);
+int create_swapchain(vulkan_context* ctx);
+int create_render_pass(vulkan_context* ctx);
+int create_framebuffers(vulkan_context* ctx);
+int create_command_pool(vulkan_context* ctx);
+int create_command_buffer(vulkan_context* ctx);
